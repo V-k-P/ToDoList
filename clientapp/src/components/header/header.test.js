@@ -7,7 +7,7 @@ describe("header", () => {
     render(<Header />);
     const title = screen.getByText("Demo App");
     //console.log(title, "********************");
-    expect(title).not.toBeInTheDocument();
+    expect(title).toBeInTheDocument();
   });
 
   test("links are present", () => {
