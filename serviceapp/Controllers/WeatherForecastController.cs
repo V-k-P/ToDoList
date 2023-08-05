@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using serviceapp.db;
 
 namespace serviceapp.Controllers;
 
@@ -21,6 +22,7 @@ public class WeatherForecastController : ControllerBase
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
+        //SqLiteBaseRepository.CreateAndOpenDb();
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = DateTime.Now.AddDays(index),

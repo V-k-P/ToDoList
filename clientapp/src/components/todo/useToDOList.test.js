@@ -15,7 +15,7 @@ let testData = [
     id: "3",
     name: "third",
     priority: 3,
-  }
+  },
 ];
 describe("Use todo hook", () => {
   test("has empty list of tasks", () => {

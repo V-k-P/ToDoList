@@ -2,11 +2,21 @@ import { useEffect, useState } from "react";
 import useToDoList from "./useToDoList";
 import InputBox from "./inputBox";
 import Item from "./itemRow";
+import axios from "axios";
 
 const ToDo = ({ todos = [] }) => {
-  const [todoList, addtask, updateTask, deleteTask, clearAll] = useToDoList({
-    initialData: todos,
-  });
+  useEffect(() => {
+    axios.get("/todo").then((data) => {
+      console.log(data);
+      setTasks(data.data);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [todoList, addtask, updateTask, deleteTask, clearAll, setTasks] =
+    useToDoList({
+      initialData: todos,
+    });
 
   return (
     <div
@@ -43,7 +53,7 @@ const ToDo = ({ todos = [] }) => {
           {todoList.map((task) => {
             return (
               <Item
-                key={task.name}
+                key={task.id}
                 task={task}
                 onDelete={() => deleteTask(task.id)}
               />

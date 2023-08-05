@@ -3,6 +3,10 @@ import { useState } from "react";
 const useToDoList = ({ initialData = [] }) => {
   const [todoList, setTodoList] = useState(initialData);
 
+  const setTasks = (list) => {
+    setTodoList(() => list);
+  };
+
   const addTask = (name, priority) => {
     setTodoList((list) => {
       return [
@@ -36,11 +40,11 @@ const useToDoList = ({ initialData = [] }) => {
     });
   };
 
-  const clearAll = ()=>{
-    setTodoList(()=> []);
-  }
+  const clearAll = () => {
+    setTodoList(() => []);
+  };
 
-  return [todoList, addTask, updateTask, deleteTask, clearAll];
+  return [todoList, addTask, updateTask, deleteTask, clearAll, setTasks];
 };
 
 export default useToDoList;

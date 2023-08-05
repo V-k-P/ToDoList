@@ -1,6 +1,9 @@
-import { render, screen, within, act } from "@testing-library/react";
+import { render, screen, within, act, waitFor } from "@testing-library/react";
 import user from "@testing-library/user-event";
 import ToDo from "./todo";
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:5079";
+jest.mock("axios");
 let testData = [
   {
     id: "1",
@@ -19,31 +22,43 @@ let testData = [
   },
 ];
 describe("to do list", () => {
-  test("todo list label is present", () => {
+  test("todo list label is present", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: [] }));
     render(<ToDo />);
-    const header = screen.getByRole("heading", {
+
+    const header = await screen.findByRole("heading", {
       level: 2,
     });
     expect(header).toBeInTheDocument();
   });
 
-  test("list not present if no task", () => {
+  test("list not present if no task", async () => {
+    //await act(async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: [] }));
+    //});
+
     render(<ToDo todos={[]} />);
-    const list = screen.queryByRole("list");
-    expect(list).not.toBeInTheDocument();
+    await waitFor(async () => {
+      const list = screen.queryByRole("list");
+      expect(list).not.toBeInTheDocument();
+    });
   });
 
-  test("list items are present if no task", () => {
+  test("list items are present if no task", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: [] }));
     render(<ToDo todos={testData} />);
-    const list = screen.getByRole("list");
-    expect(list).toBeInTheDocument();
+    await waitFor(async () => {
+      const list = screen.getByRole("list");
+      expect(list).toBeInTheDocument();
 
-    const { getAllByRole } = within(list);
-    const items = getAllByRole("listitem");
-    expect(items.length).toBe(3);
+      const { getAllByRole } = within(list);
+      const items = getAllByRole("listitem");
+      expect(items.length).toBe(3);
+    });
   });
 
   test("add item to list", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: [] }));
     user.setup();
     render(<ToDo />);
     let txt = screen.getByPlaceholderText("Type Task Name");
@@ -66,8 +81,9 @@ describe("to do list", () => {
   });
 
   test("delete item to list", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: testData }));
     user.setup();
-    render(<ToDo todos={testData} />);
+    render(<ToDo todos={[]} />);
     let list = await screen.findByRole("list");
     const { getAllByRole } = within(list);
     const items = getAllByRole("listitem");
@@ -82,6 +98,7 @@ describe("to do list", () => {
   });
 
   test("test Clear All", async () => {
+    axios.get.mockImplementation(() => Promise.resolve({ data: testData }));
     user.setup();
     render(<ToDo todos={testData} />);
     let clearAllBtn = screen.getByRole("button", {
